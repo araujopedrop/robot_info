@@ -18,8 +18,6 @@ AGVRobotInfo::AGVRobotInfo(ros::NodeHandle *node_handle) {
 }
 
 void AGVRobotInfo::publish_data() {
-  // config_output_srv = nh->advertiseService("robot_manager_output",
-  // &RobotManagerBase::ConfigOutputCallback, this);
   robotinfo_msgs::RobotInfo10Fields msg;
 
   /*
@@ -29,6 +27,9 @@ void AGVRobotInfo::publish_data() {
     data_field_03 = ip_address: The AGV´s IP Address
     data_field_04 = firmware_version: The AGV´s Firmware version
     data_field_05 = maximum_payload: The AGV´s maximum_payload
+    data_field_06 = hydraulic_oil_temperature
+    data_field_07 = hydraulic_oil_tank_fill_level
+    data_field_08 = hydraulic_oil_pressure
   */
 
   msg.data_field_01 = this->robot_description;
@@ -36,6 +37,21 @@ void AGVRobotInfo::publish_data() {
   msg.data_field_03 = this->ip_address;
   msg.data_field_04 = this->firmware_version;
   msg.data_field_05 = this->maximum_payload;
+  msg.data_field_06 = this->get_hydraulic_oil_temperature();
+  msg.data_field_07 = this->get_hydraulic_oil_tank_fill_level();
+  msg.data_field_08 = this->get_hydraulic_oil_pressure();
 
   this->pub_robot_info.publish(msg);
+}
+
+std::string AGVRobotInfo::get_hydraulic_oil_temperature() {
+  return HSM.get_hydraulic_oil_temperature();
+}
+
+std::string AGVRobotInfo::get_hydraulic_oil_tank_fill_level() {
+  return HSM.get_hydraulic_oil_tank_fill_level();
+}
+
+std::string AGVRobotInfo::get_hydraulic_oil_pressure() {
+  return HSM.get_hydraulic_oil_pressure();
 }
